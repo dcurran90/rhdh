@@ -1133,7 +1133,8 @@ plugins:
                 config:
                   path: marketplace
                   title: Catalog
-
+  - package: ./plugins/rhdh-vault-backend
+    disabled: false
   # Group: Orchestrator
   - package: "@redhat/backstage-plugin-orchestrator@1.5.1"
     disabled: true

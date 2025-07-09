@@ -63,3 +63,4 @@ dynamic-plugins-root/*
 
 # Private Keys
 *.pem
+yarn.lock

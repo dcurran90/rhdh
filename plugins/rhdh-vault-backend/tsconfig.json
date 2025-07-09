@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "commonjs",
+    "declaration": true,
+    "outDir": "../../dist-types/plugins/rhdh-vault-backend/src",
+    "rootDir": "src",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src"
+  ]
+}

@@ -5,6 +5,8 @@ import { StaticPlugins } from './components/DynamicRoot/DynamicRoot';
 import ScalprumRoot from './components/DynamicRoot/ScalprumRoot';
 import { DefaultMainMenuItems } from './consts';
 
+import { rhdhVaultPlugin, RhdhVaultPage } from '@internal/plugin-rhdh-vault';
+
 // Statically integrated frontend plugins
 const { dynamicPluginsInfoPlugin, ...dynamicPluginsInfoPluginModule } =
   await import('@internal/plugin-dynamic-plugins-info');
@@ -17,6 +19,18 @@ const baseFrontendConfig = {
     dynamicPlugins: {
       frontend: {
         'default.main-menu-items': DefaultMainMenuItems,
+        'internal.plugin-rhdh-vault-frontend': {
+          dynamicRoutes: [
+            {
+              path: '/vault',
+              importName: 'RhdhVaultPage',
+              menuItem: {
+                icon: 'lock', // or whatever you prefer
+                text: 'Vault',
+              },
+            },
+          ],
+        },
         // please keep this in sync with plugins/dynamic-plugins-info/app-config.janus-idp.yaml
         'internal.plugin-dynamic-plugins-info': {
           appIcons: [
@@ -62,6 +76,12 @@ const staticPlugins: StaticPlugins = {
   'internal.plugin-dynamic-plugins-info': {
     plugin: dynamicPluginsInfoPlugin,
     module: dynamicPluginsInfoPluginModule,
+  },
+  'internal.plugin-rhdh-vault-frontend': {
+    plugin: rhdhVaultPlugin,
+    module: {
+      RhdhVaultPage,
+    },
   },
 };
 

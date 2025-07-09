@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "lib": ["es2020", "dom"],        // ✅ WAS es2019 — upgraded to es2020
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "strict": true,
+    "noEmit": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  }
+}

@@ -1,0 +1,1 @@
+export { createVaultService } from './createVaultService';
