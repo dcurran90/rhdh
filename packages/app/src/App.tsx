@@ -5,7 +5,7 @@ import { StaticPlugins } from './components/DynamicRoot/DynamicRoot';
 import ScalprumRoot from './components/DynamicRoot/ScalprumRoot';
 import { DefaultMainMenuItems } from './consts';
 
-import { rhdhVaultPlugin, RhdhVaultPage } from '@internal/plugin-rhdh-vault';
+const { rhdhVaultPlugin, ...RhdhVaultPage } = await import('@internal/plugin-rhdh-vault');
 
 // Statically integrated frontend plugins
 const { dynamicPluginsInfoPlugin, ...dynamicPluginsInfoPluginModule } =
@@ -19,7 +19,8 @@ const baseFrontendConfig = {
     dynamicPlugins: {
       frontend: {
         'default.main-menu-items': DefaultMainMenuItems,
-        'internal.plugin-rhdh-vault-frontend': {
+
+        'internal.plugin-rhdh-vault': {
           dynamicRoutes: [
             {
               path: '/vault',
@@ -77,11 +78,9 @@ const staticPlugins: StaticPlugins = {
     plugin: dynamicPluginsInfoPlugin,
     module: dynamicPluginsInfoPluginModule,
   },
-  'internal.plugin-rhdh-vault-frontend': {
+  'internal.plugin-rhdh-vault': {
     plugin: rhdhVaultPlugin,
-    module: {
-      RhdhVaultPage,
-    },
+    module: RhdhVaultPage,
   },
 };
 

@@ -4,8 +4,10 @@ import {
 } from '@backstage/backend-plugin-api';
 
 export interface VaultItem {
-  title: string;
-  id: string;
+  path: string;
+  key: string;
+  value: string;
+  version: string;
   createdBy: string;
   createdAt: string;
 }
@@ -13,7 +15,7 @@ export interface VaultItem {
 export interface VaultService {
   createVaultItem(
     input: {
-      title: string;
+      path: string;
       entityRef?: string;
     },
     options: {
@@ -21,7 +23,8 @@ export interface VaultService {
     },
   ): Promise<VaultItem>;
 
-  listVaultSecrets(): Promise<{ items: VaultItem[] }>;
+  listVaultSecretsOLD(): Promise<{ secrets: VaultItem[] }>;
+  listVaultSecrets(): Promise<{ secrets: VaultItem[] }>;
 
-  getVaultSecret(request: { id: string }): Promise<VaultItem>;
+  getVaultSecret(request: { mountPath: string, secretPath: string }): Promise<{secrets: VaultItem[]}>;
 }

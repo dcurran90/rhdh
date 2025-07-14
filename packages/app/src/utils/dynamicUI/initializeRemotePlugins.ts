@@ -7,6 +7,7 @@ import { RemotePlugins } from '../../components/DynamicRoot/DynamicRoot';
 const ignoreStaticPlugins = [
   'default.main-menu-items',
   'internal.plugin-dynamic-plugins-info',
+  'internal.plugin-rhdh-vault'
 ];
 
 const initializeRemotePlugins = async (

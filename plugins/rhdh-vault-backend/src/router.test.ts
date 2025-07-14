@@ -8,6 +8,7 @@ import request from 'supertest';
 
 import { createRouter } from './router';
 import { TodoListService } from './services/TodoListService/types';
+import { VaultService } from './services/VaultService/types';
 
 const mockTodoItem = {
   title: 'Do the thing',
@@ -20,17 +21,17 @@ const mockTodoItem = {
 // Testing the router directly allows you to write a unit test that mocks the provided options.
 describe('createRouter', () => {
   let app: express.Express;
-  let todoListService: jest.Mocked<TodoListService>;
+  let vaultService: jest.Mocked<VaultService>;
 
   beforeEach(async () => {
-    todoListService = {
-      createTodo: jest.fn(),
-      listTodos: jest.fn(),
-      getTodo: jest.fn(),
+    vaultService = {
+      createVaultItem: jest.fn(),
+      listVaultSecrets: jest.fn(),
+      getVaultSecret: jest.fn(),
     };
     const router = await createRouter({
       httpAuth: mockServices.httpAuth(),
-      todoListService,
+      vaultService,
     });
     app = express();
     app.use(router);
@@ -38,7 +39,7 @@ describe('createRouter', () => {
   });
 
   it('should create a TODO', async () => {
-    todoListService.createTodo.mockResolvedValue(mockTodoItem);
+    vaultService.createVaultItem.mockResolvedValue(mockTodoItem);
 
     const response = await request(app).post('/todos').send({
       title: 'Do the thing',
@@ -49,14 +50,14 @@ describe('createRouter', () => {
   });
 
   it('should not allow unauthenticated requests to create a TODO', async () => {
-    todoListService.createTodo.mockResolvedValue(mockTodoItem);
+    vaultService.createVaultItem.mockResolvedValue(mockTodoItem);
 
     // TEMPLATE NOTE:
     // The HttpAuth mock service considers all requests to be authenticated as a
     // mock user by default. In order to test other cases we need to explicitly
     // pass an authorization header with mock credentials.
     const response = await request(app)
-      .post('/todos')
+      .post('/secrets')
       .set('Authorization', mockCredentials.none.header())
       .send({
         title: 'Do the thing',

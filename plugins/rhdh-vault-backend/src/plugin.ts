@@ -4,7 +4,7 @@ import {
 } from '@backstage/backend-plugin-api';
 import { createRouter } from './router';
 import { catalogServiceRef } from '@backstage/plugin-catalog-node';
-import { createTodoListService } from './services/TodoListService';
+import { createVaultService } from './services/VaultService';
 import express from 'express';
 
 
@@ -24,25 +24,37 @@ export const rhdhVaultPlugin = createBackendPlugin({
         httpRouter: coreServices.httpRouter,
         rootHttpRouter: coreServices.rootHttpRouter,
         catalog: catalogServiceRef,
+        config: coreServices.rootConfig,
       },
-      async init({ logger, httpAuth, httpRouter, rootHttpRouter, catalog }) {
-        const todoListService = await createTodoListService({
+      async init({ logger, httpAuth, httpRouter, rootHttpRouter, catalog, config }) {
+        const vaultService = await createVaultService({
           logger,
           catalog,
+          config,
         });
 
 
 
         const publicRouter = express.Router();
-        publicRouter.get('/ping', (_req, res) => {
-          res.json({ status: '✅ rhdh-vault-backend is alive (public dan)' });
+        publicRouter.get('/ping', async (req, res) => {
+
+          try {
+            const { secrets } = await vaultService.getVaultSecret({ mountPath: 'secret', secretPath: 'hello' });
+            res.json({ secrets });
+          } catch (e) {
+            const message = e instanceof Error ? e.message : 'Unknown error';
+            res.status(500).json({ error: message });
+          }
+
+          // res.json(await vaultService.getVaultSecret(req));
+          // res.json({ status: '✅ rhdh-vault-backend is alive (public danss)' });
         });
         rootHttpRouter.use('/api/rhdh-vault-test', publicRouter); // No auth on this one
 
         httpRouter.use(
           await createRouter({
             httpAuth,
-            todoListService,
+            vaultService,
           }),
         );
       },
