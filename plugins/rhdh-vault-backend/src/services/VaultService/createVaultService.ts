@@ -3,7 +3,7 @@ import { NotFoundError } from '@backstage/errors';
 import { catalogServiceRef } from '@backstage/plugin-catalog-node';
 import { Config } from '@backstage/config';
 import crypto from 'node:crypto';
-import { VaultItem, VaultService } from './types';
+import { VaultItem, VaultPath, VaultService } from './types';
 
 // TEMPLATE NOTE:
 // This is a simple in-memory todo list store. It is recommended to use a
@@ -69,20 +69,29 @@ export async function createVaultService({
             return newSecret;
         },
 
-        async listVaultSecretsOLD() {
+        async listVaultSecretPaths(request: { mountPath: string }) {
+            if (!vaultToken) {
+                throw new Error('Missing vault token configuration');
+            }
+            const response = await fetch(`${vaultAddr}/v1/${request.mountPath}/metadata`, {
+                method: 'LIST',
+                headers: {
+                    'X-Vault-Token': vaultToken,
+                },
+            });
 
-            return { secrets: Array.from(storedSecrets) };
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Vault mounts request failed: ${response.status} ${errorText}`);
+            }
+            const {data} = await response.json();
+            return data.keys;
         },
 
-        async listVaultSecrets() {
+        async listVaultMountPaths() {
 
             if (!vaultToken) {
-                return {
-                    success: false,
-                    error: 'Vault configuration error: missing token',
-                    statusCode: 500,
-                    secrets: [],
-                };
+                throw new Error('Missing vault token configuration');
             }
             const response = await fetch(`${vaultAddr}/v1/sys/mounts`, {
                 method: 'GET',
@@ -91,30 +100,20 @@ export async function createVaultService({
                 },
             });
 
-
             if (!response.ok) {
                 const errorText = await response.text();
                 throw new Error(`Vault mounts request failed: ${response.status} ${errorText}`);
             }
-            const data = await response.json();
-            const storedSecrets = Object.entries(data)
-                .filter(([myPath, meta]: [string, any]) => meta.type === 'kv')
-                .map(([myPath, meta]: [string, any]) => ({
-                    path: myPath,
-                    key: 'testKey',
-                    value: 'testValue',
-                    createdBy: '',
-                    createdAt: '',
-                    version: meta.options?.version || '1',
-                }));
+            const data: VaultPath = await response.json();
+            const kvMounts = Object.entries(data)
+                .filter(([_, meta]) => meta && meta['type'] === 'kv')
+                .map(([path, meta]) => ({ [path]: { ...meta } }));
 
-
-            return { secrets: storedSecrets };
+            return { mounts: kvMounts };
         },
 
 
         async getVaultSecret(request: { mountPath: string, secretPath: string }): Promise<{ secrets: VaultItem[] }> {
-
             if (!vaultToken) {
                 throw new Error('Missing vault token configuration');
             }
@@ -125,36 +124,32 @@ export async function createVaultService({
                 },
             });
 
-            logger.info("SENT TO: " + `${vaultAddr}/v1/secret/data/${request.path}`)
             logger.info('Status: ' + response.status);
             logger.info('Status Text: ' + response.statusText);
             logger.info('Headers: ' + Object.fromEntries(response.headers.entries()));
 
             const responseClone = response.clone();
-
-            try {
-                const json = await responseClone.json();
-                console.log('JSON Body:', json);
-            } catch (err) {
-                logger.info("TEST")
-            }
-
+            const myJSON = await responseClone.json();
+            console.log('JSON Body:', myJSON);
 
             if (!response.ok) {
                 const errorText = await response.text();
                 throw new Error(`Vault mounts request failed: ${response.status} ${errorText}`);
             }
             const data = await response.json();
-            const storedSecrets = Object.entries(data)
-                .filter(([myPath, meta]: [string, any]) => meta.type === 'kv')
-                .map(([myPath, meta]: [string, any]) => ({
-                    path: myPath,
-                    key: 'testKey',
-                    value: 'testValue',
-                    version: meta.options?.version || '1',
-                    createdBy: '',
-                    createdAt: '',
-                }));
+
+            logger.info("DAN4")
+            logger.info(JSON.stringify(myJSON, null, 2))
+            // const storedSecrets = Object.entries(data)
+            //     .filter(([myPath, meta]: [string, any]) => meta.mount_type === 'kv')
+            //     .map(([myPath, meta]: [string, any]) => ({
+            //         path: myPath,
+            //         key: 'testKey',
+            //         value: 'testValue',
+            //         version: meta.options?.version || '1',
+            //         createdBy: '',
+            //         createdAt: '',
+            //     }));
 
 
             return { secrets: storedSecrets };

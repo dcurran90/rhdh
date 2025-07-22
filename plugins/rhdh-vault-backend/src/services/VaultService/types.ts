@@ -12,6 +12,12 @@ export interface VaultItem {
   createdAt: string;
 }
 
+export interface VaultPath {
+  [path: string]: {
+    type: string
+  }
+}
+
 export interface VaultService {
   createVaultItem(
     input: {
@@ -23,8 +29,7 @@ export interface VaultService {
     },
   ): Promise<VaultItem>;
 
-  listVaultSecretsOLD(): Promise<{ secrets: VaultItem[] }>;
-  listVaultSecrets(): Promise<{ secrets: VaultItem[] }>;
-
-  getVaultSecret(request: { mountPath: string, secretPath: string }): Promise<{secrets: VaultItem[]}>;
+  listVaultSecretPaths(request: { mountPath: string }): Promise<{ keys: string[] }>;
+  listVaultMountPaths(): Promise<{ mounts: VaultPath[] }>;
+  getVaultSecret(request: { mountPath: string, secretPath: string }): Promise<{ secrets: VaultItem[] }>;
 }

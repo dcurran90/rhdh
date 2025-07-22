@@ -40,11 +40,17 @@ export async function createRouter({
   });
 
   router.get('/secrets', async (_req, res) => {
-    res.json(await vaultService.listVaultSecrets());
+    res.json(await vaultService.listVaultMountPaths());
   });
 
-  router.get('/secret/:id', async (req, res) => {
-    res.json(await vaultService.getVaultSecret({ mountPath: 'secret', secretPath: 'hello' }));
+  router.get('/secret/:mountPath', async (req, res) => {
+    const mountPath = req.params;
+    res.json(await vaultService.listVaultSecretPaths(mountPath));
+  });
+
+  router.get('/secret/:mountPath/:secretPath', async (req, res) => {
+    const {mountPath, secretPath} = req.params;
+    res.json(await vaultService.getVaultSecret({ mountPath: mountPath, secretPath: secretPath }));
   });
 
   return router;

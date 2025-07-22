@@ -7,6 +7,7 @@ import {
 } from '@backstage/core-components';
 import useAsync from 'react-use/lib/useAsync';
 import { useApi, discoveryApiRef, fetchApiRef } from '@backstage/core-plugin-api';
+import { useEffect, useState } from 'react';
 
 
 const useStyles = makeStyles({
@@ -17,121 +18,131 @@ const useStyles = makeStyles({
   },
 });
 
-export const exampleUsers = {
-  results: [
-    {
-      gender: 'female',
-      name: {
-        title: 'Miss',
-        first: 'Carolyn',
-        last: 'Moore',
-      },
-      email: 'carolyn.moore@example.com',
-      picture: 'https://api.dicebear.com/6.x/open-peeps/svg?seed=Carolyn',
-      nat: 'GB',
-    },
-    {
-      gender: 'female',
-      name: {
-        title: 'Ms',
-        first: 'Esma',
-        last: 'Berberoğlu',
-      },
-      email: 'esma.berberoglu@example.com',
-      picture: 'https://api.dicebear.com/6.x/open-peeps/svg?seed=Esma',
-      nat: 'TR',
-    },
-  ],
-};
-
+type VaultMount = {
+  [path: string]: {
+    type: string;
+  }
+}
 type VaultItem = {
-  title: string;
-  id: string;
+  path: string;
+  key: string;
+  value: string;
+  version: string;
   createdBy: string;
   createdAt: string;
 }
 
-
-type User = {
-  gender: string; // "male"
-  name: {
-    title: string; // "Mr",
-    first: string; // "Duane",
-    last: string; // "Reed"
-  };
-  email: string; // "duane.reed@example.com"
-  picture: string; // "https://api.dicebear.com/6.x/open-peeps/svg?seed=Duane"
-  nat: string; // "AU"
-};
-
 type DenseTableProps = {
-  items: VaultItem[];
+  items: VaultMount[];
 };
 
 export const DenseTable = ({ items }: DenseTableProps) => {
   const classes = useStyles();
+  const [selectedMount, setSelectedMount] = useState<string | null>(null);
+  const discoveryApi = useApi(discoveryApiRef);
+  const fetchApi = useApi(fetchApiRef);
 
-  const columns: TableColumn[] = [
-    { title: 'title', field: 'title' },
-    { title: 'id', field: 'id' },
-    { title: 'Created By', field: 'createdBy' },
-    { title: 'Created At', field: 'createdAt' },
-  ];
+  useEffect(() => {
+    if (selectedMount) {
 
-  const data = items
-  // items.map(item => {
-  //   return {
-  //     title: `${item.title}`,
-  //     id: item.id,
-  //     createdBy: item.createdBy,
-  //     createdAt: item.createdAt
-  //   };
-  // });
+
+      console.log('In UseEffect')
+      const fetchSecrets = async () => {
+        try {
+          const baseUrl = await discoveryApi.getBaseUrl('rhdh-vault');
+          const response = await fetchApi.fetch(`${baseUrl}/secret/${selectedMount}`);
+          const result = await response.json();
+
+          console.log('Fetched secret path:', result);
+          for(var secPath of result) {
+            console.log('getting secret path ', secPath) 
+            const response = await fetchApi.fetch(`${baseUrl}/secret/${selectedMount}${secPath}`);
+            const kvResult = await response.json();
+
+            console.log('Fetched secrets:', kvResult);
+          }
+        } catch (error) {
+          console.error('Failed to fetch secrets:', error);
+        }
+      };
+
+      fetchSecrets();
+
+      // ✅ Run your fetch or API call here
+      // fetch(`/api/my-plugin/secrets?path=${selectedMount}`)
+      //   .then(res => res.json())
+      //   .then(data => {
+      //     console.log('Fetched secrets:', data);
+      //   })
+      //   .catch(err => {
+      //     console.error('Failed to fetch secrets', err);
+      //   });
+    }
+  }, [selectedMount]);
+
+  const mountTableColumns: TableColumn[] = [
+    { title: 'path', field: 'path' },
+    { title: 'type', field: 'type' },
+  ]
+
+  const secretTableColumns: TableColumn[] = [
+    { title: 'key', field: 'key' },
+    { title: 'value', field: 'value' },
+  ]
+
+  const data = items.flatMap(item =>
+    Object.entries(item).map(([path, item]) => {
+      return {
+        path: path,
+        type: item.type,
+      };
+    }));
 
   return (
-    <Table
-      title="Example Todo List"
-      options={{ search: false, paging: false }}
-      columns={columns}
-      data={data}
-    />
+
+    <>
+      <Table
+        title="Vault Mounts"
+        options={{ search: false, paging: false }}
+        columns={mountTableColumns}
+        data={data}
+        onRowClick={(_, rowData) => {
+          if (rowData && 'path' in rowData) {
+            setSelectedMount(rowData['path'] as string)
+          }
+        }}
+      />
+
+      <br />
+
+      {selectedMount && (
+
+        <Table
+          title="Vault Secrets"
+          options={{ search: false, paging: false }}
+          columns={secretTableColumns}
+          data={data}
+        />
+      )}
+
+    </>
   );
 };
-
-// export const ExampleFetchComponentOLD = () => {
-
-//   const { value, loading, error } = useAsync(async (): Promise<User[]> => {
-//     // Would use fetch in a real world example
-//     return exampleUsers.results;
-//   }, []);
-
-//   if (loading) {
-//     return <Progress />;
-//   } else if (error) {
-//     return <ResponseErrorPanel error={error} />;
-//   }
-
-//   return <DenseTable users={value || []} />;
-// };
-
 
 export const ExampleFetchComponent = () => {
   const discoveryApi = useApi(discoveryApiRef);
   const fetchApi = useApi(fetchApiRef);
 
-  const { value, loading, error } = useAsync(async (): Promise<VaultItem[]> => {
+  const { value, loading, error } = useAsync(async (): Promise<VaultMount[]> => {
     const baseUrl = await discoveryApi.getBaseUrl('rhdh-vault');
     const response = await fetchApi.fetch(`${baseUrl}/secrets`);
 
-    console.log("DAN1")
-    console.log(`${baseUrl}/secrets`)
     if (!response.ok) {
       throw new Error(`Failed to fetch secrets: ${response.statusText}`);
     }
     const data = await response.json();
-
     // Adapt the response shape if needed
-    return data.secrets || []; // 👈 assume your backend returns { secrets: [...] }
+    return data.mounts || [];
   }, []);
 
   if (loading) return <Progress />;

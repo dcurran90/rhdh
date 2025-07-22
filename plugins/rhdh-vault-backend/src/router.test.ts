@@ -26,7 +26,7 @@ describe('createRouter', () => {
   beforeEach(async () => {
     vaultService = {
       createVaultItem: jest.fn(),
-      listVaultSecrets: jest.fn(),
+      listVaultMountPaths: jest.fn(),
       getVaultSecret: jest.fn(),
     };
     const router = await createRouter({
