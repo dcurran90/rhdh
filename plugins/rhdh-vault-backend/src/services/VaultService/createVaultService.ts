@@ -23,14 +23,13 @@ export async function createVaultService({
     const vaultConfig = config.getConfig('rhdhVault');
     const vaultAddr = vaultConfig.getString('baseUrl');
     const vaultToken = vaultConfig.getString('token');
-    const defaultKeyPath = vaultConfig.getString('defaultKeyPath');
 
     const storedSecrets = new Array<VaultItem>();
     const testNewSecret: VaultItem = {
         path: 'testItem',
         version: '1',
-        key: 'test',
-        value: 'test',
+        key: 'testKey',
+        value: 'testValue',
         createdBy: 'test',
         createdAt: new Date().toISOString(),
     };
@@ -152,7 +151,7 @@ export async function createVaultService({
             //     }));
 
 
-            return { secrets: storedSecrets };
+            return { secrets: data };
         },
     };
 }

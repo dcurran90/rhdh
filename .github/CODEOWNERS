@@ -1,6 +1,6 @@
 # Lines starting with '#' are comments.
 # Each line is a file pattern followed by one or more owners.
 
-*                                                                 @backstage/maintainers
-/home/danimal/Projects/Backstage/rhdh/plugins/rhdh-vault          @dcurran90
-/home/danimal/Projects/Backstage/rhdh/plugins/rhdh-vault-backend  @dcurran90
+*                                                                                                         @backstage/maintainers
+/home/danimal/Projects/Backstage/rhdh/plugins/rhdh-vault                                                  @dcurran90
+/home/danimal/Projects/Backstage/rhdh/plugins/rhdh-vault-backend                                          @dcurran90

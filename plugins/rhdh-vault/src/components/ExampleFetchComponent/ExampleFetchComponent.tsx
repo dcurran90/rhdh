@@ -41,26 +41,34 @@ export const DenseTable = ({ items }: DenseTableProps) => {
   const [selectedMount, setSelectedMount] = useState<string | null>(null);
   const discoveryApi = useApi(discoveryApiRef);
   const fetchApi = useApi(fetchApiRef);
+const [vaultSecrets, setVaultSecrets] = useState<{ path: string, key: string; value: string }[]>([]);
 
   useEffect(() => {
     if (selectedMount) {
-
-
-      console.log('In UseEffect')
       const fetchSecrets = async () => {
         try {
           const baseUrl = await discoveryApi.getBaseUrl('rhdh-vault');
           const response = await fetchApi.fetch(`${baseUrl}/secret/${selectedMount}`);
           const result = await response.json();
 
-          console.log('Fetched secret path:', result);
           for(var secPath of result) {
-            console.log('getting secret path ', secPath) 
             const response = await fetchApi.fetch(`${baseUrl}/secret/${selectedMount}${secPath}`);
             const kvResult = await response.json();
+            console.log('Fetched secrets D:', kvResult.secrets.data.data);
 
-            console.log('Fetched secrets:', kvResult);
+            for(var pair of kvResult.secrets) {
+
+              const newSecret = {
+                path: secPath,
+                key: pair.key,
+                value: pair.value
+              }
+              setVaultSecrets([...vaultSecrets, newSecret])
+              console.log('Fetched secrets:', pair);
+            }
           }
+
+
         } catch (error) {
           console.error('Failed to fetch secrets:', error);
         }
@@ -68,15 +76,6 @@ export const DenseTable = ({ items }: DenseTableProps) => {
 
       fetchSecrets();
 
-      // ✅ Run your fetch or API call here
-      // fetch(`/api/my-plugin/secrets?path=${selectedMount}`)
-      //   .then(res => res.json())
-      //   .then(data => {
-      //     console.log('Fetched secrets:', data);
-      //   })
-      //   .catch(err => {
-      //     console.error('Failed to fetch secrets', err);
-      //   });
     }
   }, [selectedMount]);
 
@@ -86,6 +85,7 @@ export const DenseTable = ({ items }: DenseTableProps) => {
   ]
 
   const secretTableColumns: TableColumn[] = [
+    { title: 'path', field: 'path'},
     { title: 'key', field: 'key' },
     { title: 'value', field: 'value' },
   ]
@@ -97,6 +97,14 @@ export const DenseTable = ({ items }: DenseTableProps) => {
         type: item.type,
       };
     }));
+
+    // const vaultSecretData = vaultSecrets.flatMap(item =>
+    // Object.entries(item).map(([path, item]) => {
+    //   return {
+    //     key: path,
+    //     value: item.type,
+    //   };
+    // }));
 
   return (
 
@@ -115,13 +123,12 @@ export const DenseTable = ({ items }: DenseTableProps) => {
 
       <br />
 
-      {selectedMount && (
-
+      {selectedMount && vaultSecrets &&  (
         <Table
           title="Vault Secrets"
           options={{ search: false, paging: false }}
           columns={secretTableColumns}
-          data={data}
+          data={vaultSecrets}
         />
       )}
 
