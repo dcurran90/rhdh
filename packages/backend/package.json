@@ -65,6 +65,7 @@
     "@internal/plugin-dynamic-plugins-info-backend": "*",
     "@internal/plugin-licensed-users-info-backend": "*",
     "@internal/plugin-rhdh-vault-backend": "workspace:^",
+    "@internal/plugin-scaffolder-backend-module-vault-secret-add-module": "workspace:^",
     "@internal/plugin-scalprum-backend": "*",
     "@janus-idp/backstage-plugin-audit-log-node": "1.7.2",
     "@opentelemetry/api": "1.9.0",

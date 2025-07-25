@@ -162,4 +162,5 @@ backend.add(import('@internal/plugin-scalprum-backend'));
 backend.add(import('@internal/plugin-licensed-users-info-backend'));
 
 backend.add(import('@internal/plugin-rhdh-vault-backend'));
+backend.add(import('@internal/plugin-scaffolder-backend-module-vault-secret-add-module'));
 backend.start();
