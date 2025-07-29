@@ -1,0 +1,43 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: create-secret
+  title: Create a Vault secret
+  description: RHDH Action to create secret
+spec:
+  owner: dcurran90
+  type: service
+  parameters:
+    - title: Provide secret path, key and value
+      required:
+        - path
+        - key
+        - value
+      properties:
+        path:
+          title: Path
+          type: string
+          description: path of the secret
+          ui:autofocus: true
+        key:
+          title: Key
+          type: string
+          description: key of the secret
+        value:
+          title: Value
+          type: string
+          description: value of the secret
+
+  steps:    
+    - id: create-secret
+      name: create a new secret
+      action: vault:add-secret
+      input:
+        path: ${{ parameters.path }}
+        key: ${{ parameters.key }}
+        value: ${{ parameters.value }}
+  output:
+      text:
+        - title: 'Secret created successfully'
+          content: |
+            data: `${{ steps['create-secret'].output.data }}`
