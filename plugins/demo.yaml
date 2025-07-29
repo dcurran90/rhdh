@@ -31,7 +31,7 @@ spec:
   steps:    
     - id: create-secret
       name: create a new secret
-      action: vault:add-secret
+      action: scaffolder:vault-secret-add-module
       input:
         path: ${{ parameters.path }}
         key: ${{ parameters.key }}
