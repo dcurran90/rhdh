@@ -13,6 +13,10 @@ export function createVaultSecretAction() {
         }),
     },
     async handler(ctx) {
+
+      // logger.info(`user created successfully: ${ctx}`);
+
+
       await fetch('url-to-user-manager-service/user', {
         method: 'POST',
         headers: {

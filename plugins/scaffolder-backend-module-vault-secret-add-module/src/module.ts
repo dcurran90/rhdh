@@ -3,6 +3,7 @@ import {
   createBackendModule,
 } from '@backstage/backend-plugin-api';
 import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node/alpha';
+import { createVaultSecretAction } from './vaultSecretAddAction';
 
 
 export const scaffolderModuleVaultSecretAddModule = createBackendModule({
@@ -14,7 +15,9 @@ export const scaffolderModuleVaultSecretAddModule = createBackendModule({
         scaffolderActions: scaffolderActionsExtensionPoint,
         logger: coreServices.logger,
        },
-      async init({ logger }) {
+      async init({ scaffolderActions, logger }) {
+        // if you want to use any of core features, pass it to the action below
+        scaffolderActions.addActions(createVaultSecretAction());
         logger.info('Hello World!');
       },
     });
