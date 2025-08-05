@@ -14,8 +14,8 @@ export function createVaultSecretAction() {
     },
     async handler(ctx) {
 
-      // logger.info(`user created successfully: ${ctx}`);
-
+      console.log("DAN1:")
+      console.log(JSON.stringify(ctx.input.path, null, 2));
 
       await fetch('url-to-user-manager-service/user', {
         method: 'POST',
@@ -29,8 +29,38 @@ export function createVaultSecretAction() {
         }),
       });
     },
-  });
-}
+
+//     async createVaultSecret(request: { mountPath: string, secretPath: string }): Promise<{ secrets: VaultItem[] }> {
+//       if (!vaultToken) {
+//         throw new Error('Missing vault token configuration');
+//       }
+//       const response = await fetch(`${vaultAddr}/v1/${request.mountPath}/data/${request.secretPath}`, {
+//         method: 'GET',
+//         headers: {
+//           'X-Vault-Token': vaultToken,
+//         },
+//       });
+
+//       logger.info('Status: ' + response.status);
+//       logger.info('Status Text: ' + response.statusText);
+//       logger.info('Headers: ' + Object.fromEntries(response.headers.entries()));
+
+//       const responseClone = response.clone();
+//       const myJSON = await responseClone.json();
+//       console.log('JSON Body:', myJSON);
+
+//       if (!response.ok) {
+//         const errorText = await response.text();
+//         throw new Error(`Vault mounts request failed: ${response.status} ${errorText}`);
+//       }
+//       const data = await response.json();
+
+//       logger.info("DAN4")
+//       logger.info(JSON.stringify(myJSON, null, 2))
+//       return { secrets: data };
+//     },
+//   });
+// }
 
 
 // export const scaffolderModuleUserAddModule = createBackendModule({
@@ -69,5 +99,5 @@ export function createVaultSecretAction() {
 //       logger.info(`user created successfully: ${data}`);
 //       ctx.output('data', JSON.stringify(data));
 //     },
-//   });
-// }
+   });
+ }
