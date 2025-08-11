@@ -39,11 +39,9 @@ export const rhdhVaultPlugin = createBackendPlugin({
         publicRouter.get('/ping', async (req, res) => {
           try {
             const keys = await vaultService.listVaultSecretPaths({mountPath: 'secret/'});
-            logger.info("DAN PING")
             logger.info(JSON.stringify(keys, null, 2))
             res.json(keys);
           } catch (e) {
-            logger.info("IN ERROR")
             const message = e instanceof Error ? e.message : 'Unknown error';
             res.status(500).json({ error: message });
           }
