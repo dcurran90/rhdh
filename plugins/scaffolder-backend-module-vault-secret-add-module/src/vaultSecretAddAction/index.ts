@@ -75,16 +75,16 @@ export function createVaultSecretAction(config: Config) {
       
       const vaultKey = ctx.input.key
       const vaultValue = ctx.input.value
-      // const payload = {
-      //   data: { [vaultKey]: vaultValue },       // single k/v from your template input
-      // };
       const payload = {
-        [vaultKey]: vaultValue,       // single k/v from your template input
+        data: { [vaultKey]: vaultValue },       // single k/v from your template input
       };
+      // const payload = {
+      //   [vaultKey]: vaultValue,       // single k/v from your template input
+      // };
 
 
       // Post new secret
-      const response = await fetch(`${vaultUrl}/v1/${vaultPathArray[0]}/${vaultPathArray[1]}`, {
+      const response = await fetch(`${vaultUrl}/v1/${vaultPathArray[0]}/data/${vaultPathArray[1]}`, {
         method: 'POST',
         headers: {
           'X-Vault-Token': vaultToken,
