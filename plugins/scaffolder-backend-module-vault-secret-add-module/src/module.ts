@@ -13,7 +13,7 @@ export const scaffolderModuleVaultSecretGetModule = createBackendModule({
   moduleId: 'vault-secret-get-module',
   register(reg) {
     reg.registerInit({
-      deps: { 
+      deps: {
         scaffolderActions: scaffolderActionsExtensionPoint,
         logger: coreServices.logger,
         config: coreServices.rootConfig,
@@ -21,7 +21,7 @@ export const scaffolderModuleVaultSecretGetModule = createBackendModule({
       async init({ scaffolderActions, logger, config }) {
         // if you want to use any of core features, pass it to the action below
         scaffolderActions.addActions(getVaultSecretAction( config ));
-        logger.info('vault-secret-add action registered');
+        logger.info('vault-secret-get action registered');
       },
     });
   },

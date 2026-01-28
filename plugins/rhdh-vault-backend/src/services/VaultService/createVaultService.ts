@@ -123,35 +123,35 @@ export async function createVaultService({
                 },
             });
 
-            logger.info('Status: ' + response.status);
-            logger.info('Status Text: ' + response.statusText);
-            logger.info('Headers: ' + Object.fromEntries(response.headers.entries()));
-
-            const responseClone = response.clone();
-            const myJSON = await responseClone.json();
-            console.log('JSON Body:', myJSON);
-
             if (!response.ok) {
                 const errorText = await response.text();
-                throw new Error(`Vault mounts request failed: ${response.status} ${errorText}`);
+                throw new Error(`Vault get secret failed: ${response.status} ${errorText}`);
             }
-            const data = await response.json();
 
-            logger.info("DAN4")
-            logger.info(JSON.stringify(myJSON, null, 2))
-            // const storedSecrets = Object.entries(data)
-            //     .filter(([myPath, meta]: [string, any]) => meta.mount_type === 'kv')
-            //     .map(([myPath, meta]: [string, any]) => ({
-            //         path: myPath,
-            //         key: 'testKey',
-            //         value: 'testValue',
-            //         version: meta.options?.version || '1',
-            //         createdBy: '',
-            //         createdAt: '',
-            //     }));
+            const vaultResponse = await response.json();
+            logger.info('Vault response:', JSON.stringify(vaultResponse, null, 2));
 
+            // Vault KV v2 format: { data: { data: { key: value }, metadata: {...} } }
+            if (!vaultResponse.data) {
+                logger.warn('No data field in Vault response');
+                return { secrets: [] };
+            }
 
-            return { secrets: data };
+            const secretData = vaultResponse.data.data || {};
+            const metadata = vaultResponse.data.metadata || {};
+
+            // Convert key-value pairs to VaultItem array
+            const secrets = Object.entries(secretData).map(([key, value]) => ({
+                path: `${request.mountPath}/${request.secretPath}`,
+                key: key,
+                value: String(value),
+                version: String(metadata.version || '1'),
+                createdBy: metadata.created_by || 'unknown',
+                createdAt: metadata.created_time || new Date().toISOString(),
+            }));
+
+            logger.info(`Retrieved ${secrets.length} secret(s) from ${request.mountPath}/${request.secretPath}`);
+            return { secrets };
         },
     };
 }

@@ -6,19 +6,12 @@ export function createVaultSecretAction(config: Config) {
     id: 'vault:add-secret',
     description: 'adds a secret in vault',
     schema: {
-      // input: (z) =>
-      //   z.object({
-      //     path: z.string().describe('The path for the secret'),
-      //     key: z.string().describe('The key for the secret'),
-      //     value: z.string().describe('The value for the secret'),
-      //   }),
-
-      input: {
-        path: z => z.string({ description: 'The path for the secret' }),
-        key: z => z.string({ description: 'The key for the secret',}),
-        value: z => z.string({ description: 'The value for the secret' }),
-
-      },
+      input: (z) =>
+        z.object({
+          path: z.string().describe('The path for the secret'),
+          key: z.string().describe('The key for the secret'),
+          value: z.string().describe('The value for the secret'),
+        }),
     },
     async handler(ctx) {
       const vaultUrl = config.getString('rhdhVault.baseUrl');
@@ -53,7 +46,7 @@ export function createVaultSecretAction(config: Config) {
             version: '2'
           }
         };
-      
+
         const createMountResponse = await fetch(`${vaultUrl}/v1/sys/mounts/${vaultPathArray[0]}`, {
           method: 'POST',
           headers: {
@@ -72,16 +65,11 @@ export function createVaultSecretAction(config: Config) {
 
       }
 
-      
       const vaultKey = ctx.input.key
       const vaultValue = ctx.input.value
       const payload = {
-        data: { [vaultKey]: vaultValue },       // single k/v from your template input
+        data: { [vaultKey]: vaultValue },
       };
-      // const payload = {
-      //   [vaultKey]: vaultValue,       // single k/v from your template input
-      // };
-
 
       // Post new secret
       const response = await fetch(`${vaultUrl}/v1/${vaultPathArray[0]}/data/${vaultPathArray[1]}`, {
@@ -93,11 +81,10 @@ export function createVaultSecretAction(config: Config) {
         body: JSON.stringify(payload),
       });
 
-      
       ctx.logger.info(`Vault response status: ${response.status}`);
       ctx.logger.info(`Vault response:}`);
       ctx.logger.info(JSON.stringify(response))
-      
+
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Vault post request failed: ${response.status} ${errorText}`);

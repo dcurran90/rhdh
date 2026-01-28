@@ -54,7 +54,7 @@ const [vaultSecrets, setVaultSecrets] = useState<{ path: string, key: string; va
           for(var secPath of result) {
             const response = await fetchApi.fetch(`${baseUrl}/secret/${selectedMount}${secPath}`);
             const kvResult = await response.json();
-            console.log('Fetched secrets D:', kvResult.secrets.data.data);
+            console.log('Fetched secrets:', kvResult.secrets);
 
             for(var pair of kvResult.secrets) {
 
@@ -64,7 +64,7 @@ const [vaultSecrets, setVaultSecrets] = useState<{ path: string, key: string; va
                 value: pair.value
               }
               setVaultSecrets([...vaultSecrets, newSecret])
-              console.log('Fetched secrets:', pair);
+              console.log('Fetched secret pair:', pair);
             }
           }
 

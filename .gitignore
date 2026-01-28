@@ -68,3 +68,7 @@ yarn.lock
 
 
 plugins/rhdh-vault/tsconfig.tsbuildinfo
+
+# Local testing files
+local_testing/
+app-config.local.yaml

@@ -12,7 +12,6 @@ export function deleteVaultSecretAction(config: Config) {
         }),
     },
     async handler(ctx) {
-
       const vaultUrl = config.getString('rhdhVault.baseUrl');
       const vaultToken = config.getString('rhdhVault.token');
       const vaultPathArray = ctx.input.path.split("/")
