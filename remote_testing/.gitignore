@@ -1,6 +1,0 @@
-# Ignore any local customizations
-*.local.yaml
-.env
-
-# Ignore any generated files
-*.log

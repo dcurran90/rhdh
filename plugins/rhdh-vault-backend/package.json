@@ -1,8 +1,13 @@
 {
-  "name": "@internal/plugin-rhdh-vault-backend",
+  "name": "@dcurran90/backstage-plugin-rhdh-vault-backend",
   "version": "0.1.0",
   "license": "Apache-2.0",
-  "private": true,
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dcurran90/rhdh.git",
+    "directory": "plugins/rhdh-vault-backend"
+  },
   "main": "dist/index.cjs.js",
   "types": "dist/index.d.ts",
   "backstage": {
@@ -40,7 +45,9 @@
     "dist"
   ],
   "publishConfig": {
+    "access": "public",
     "main": "dist/index.cjs.js",
-    "types": "dist/index.d.ts"
+    "types": "dist/index.d.ts",
+    "registry": "https://npm.pkg.github.com"
   }
 }

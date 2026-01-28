@@ -1,0 +1,57 @@
+name: Publish Vault Plugins
+
+on:
+  push:
+    branches:
+      - vaultPlugin
+    paths:
+      - 'plugins/rhdh-vault/**'
+      - 'plugins/rhdh-vault-backend/**'
+      - 'plugins/scaffolder-backend-module-vault-secret-add-module/**'
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@dcurran90'
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build vault plugins
+        run: |
+          yarn workspace @dcurran90/backstage-plugin-rhdh-vault build
+          yarn workspace @dcurran90/backstage-plugin-rhdh-vault-backend build
+          yarn workspace @dcurran90/backstage-plugin-scaffolder-backend-module-vault-secret-add-module build
+
+      - name: Publish @dcurran90/backstage-plugin-rhdh-vault
+        working-directory: plugins/rhdh-vault
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish @dcurran90/backstage-plugin-rhdh-vault-backend
+        working-directory: plugins/rhdh-vault-backend
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish @dcurran90/backstage-plugin-scaffolder-backend-module-vault-secret-add-module
+        working-directory: plugins/scaffolder-backend-module-vault-secret-add-module
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -129,7 +129,7 @@ export async function createVaultService({
             }
 
             const vaultResponse = await response.json();
-            logger.info('Vault response:', JSON.stringify(vaultResponse, null, 2));
+            logger.info(`Vault response: ${JSON.stringify(vaultResponse, null, 2)}`);
 
             // Vault KV v2 format: { data: { data: { key: value }, metadata: {...} } }
             if (!vaultResponse.data) {
