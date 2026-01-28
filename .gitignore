@@ -71,4 +71,5 @@ plugins/rhdh-vault/tsconfig.tsbuildinfo
 
 # Local testing files
 local_testing/
+remote_testing/
 app-config.local.yaml
