@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config-vault
+  namespace: rhdh-vault-test
+data:
+  app-config-vault.yaml: |
+    app:
+      title: RHDH Vault Plugin Test
+      baseUrl: https://rhdh-vault-test-rhdh-vault-test.apps.your-cluster.com
+
+    backend:
+      baseUrl: https://rhdh-vault-test-rhdh-vault-test.apps.your-cluster.com
+      cors:
+        origin: https://rhdh-vault-test-rhdh-vault-test.apps.your-cluster.com
+      auth:
+        # TESTING ONLY - disable auth for easier testing
+        dangerouslyDisableDefaultAuthPolicy: true
+      reading:
+        allow:
+          - host: 'github.com'
+          - host: 'raw.githubusercontent.com'
+
+    # Vault plugin configuration
+    rhdhVault:
+      baseUrl: ${VAULT_ADDR}
+      token: ${VAULT_TOKEN}
+
+    auth:
+      environment: development
+      providers:
+        guest:
+          dangerouslyAllowOutsideDevelopment: true
+
+    integrations:
+      github:
+        - host: github.com
+          token: ${GITHUB_TOKEN}
+
+    catalog:
+      import:
+        entityFilename: catalog-info.yaml
+      rules:
+        - allow: [API, Component, Group, Location, Resource, System, Template, User]
+      locations:
+        # Load vault test templates
+        - type: url
+          target: https://github.com/YOUR_USERNAME/rhdh/blob/vaultPlugin/plugins/test-vault-add-secret.yaml
+        - type: url
+          target: https://github.com/YOUR_USERNAME/rhdh/blob/vaultPlugin/plugins/test-vault-get-secret.yaml
+        - type: url
+          target: https://github.com/YOUR_USERNAME/rhdh/blob/vaultPlugin/plugins/test-vault-delete-secret.yaml
+        # Optional: Load default RHDH catalog
+        - type: url
+          target: https://github.com/redhat-developer/rhdh/blob/main/catalog-entities/all.yaml

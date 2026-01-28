@@ -70,6 +70,9 @@ COPY $EXTERNAL_SOURCE_NESTED/plugins/scalprum-backend/package.json ./plugins/sca
 COPY $EXTERNAL_SOURCE_NESTED/plugins/licensed-users-info-backend/package.json ./plugins/licensed-users-info-backend/package.json
 COPY $EXTERNAL_SOURCE_NESTED/plugins/dynamic-plugins-info/package.json ./plugins/dynamic-plugins-info/package.json
 COPY $EXTERNAL_SOURCE_NESTED/plugins/dynamic-plugins-info-backend/package.json ./plugins/dynamic-plugins-info-backend/package.json
+COPY $EXTERNAL_SOURCE_NESTED/plugins/rhdh-vault/package.json ./plugins/rhdh-vault/package.json
+COPY $EXTERNAL_SOURCE_NESTED/plugins/rhdh-vault-backend/package.json ./plugins/rhdh-vault-backend/package.json
+COPY $EXTERNAL_SOURCE_NESTED/plugins/scaffolder-backend-module-vault-secret-add-module/package.json ./plugins/scaffolder-backend-module-vault-secret-add-module/package.json
 COPY $EXTERNAL_SOURCE_NESTED/packages/plugin-utils/package.json ./packages/plugin-utils/package.json
 COPY $EXTERNAL_SOURCE_NESTED/packages/backend/package.json ./packages/backend/package.json
 COPY $EXTERNAL_SOURCE_NESTED/packages/app/package.json ./packages/app/package.json

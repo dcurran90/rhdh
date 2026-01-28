@@ -8,6 +8,9 @@ plugins
 !plugins/dynamic-plugins-info-backend
 !plugins/licensed-users-info-backend
 !plugins/scalprum-backend
+!plugins/rhdh-vault
+!plugins/rhdh-vault-backend
+!plugins/scaffolder-backend-module-vault-secret-add-module
 *.local.yaml
 coverage
 dist-types

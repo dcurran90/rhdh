@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dynamic-plugins-vault
+  namespace: rhdh-vault-test
+data:
+  dynamic-plugins.yaml: |
+    includes:
+      - dynamic-plugins.default.yaml
+    plugins:
+      # Vault plugins - these are embedded in the container image
+      - package: ./dynamic-plugins/dist/backstage-plugin-scaffolder-backend-module-vault-secret-add-module-dynamic
+        disabled: false
+
+      - package: ./dynamic-plugins/dist/backstage-plugin-rhdh-vault-backend-dynamic
+        disabled: false
+
+      - package: ./dynamic-plugins/dist/backstage-plugin-rhdh-vault
+        disabled: false
+        pluginConfig:
+          dynamicPlugins:
+            frontend:
+              backstage.plugin-rhdh-vault:
+                dynamicRoutes:
+                  - path: /rhdh-vault
+                    importName: RhdhVaultPage
+                    menuItem:
+                      text: Vault Secrets
+                      icon: lock
+
+      # Enable GitHub plugins for catalog
+      - package: ./dynamic-plugins/dist/backstage-plugin-scaffolder-backend-module-github-dynamic
+        disabled: false
+
+      - package: ./dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-dynamic
+        disabled: false
