@@ -10,7 +10,8 @@
   "main": "dist/index.cjs.js",
   "types": "dist/index.d.ts",
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "rhdh-vault"
   },
   "scripts": {
     "tsc": "tsc",

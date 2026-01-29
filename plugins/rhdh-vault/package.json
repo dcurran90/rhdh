@@ -17,7 +17,8 @@
     "registry": "https://npm.pkg.github.com"
   },
   "backstage": {
-    "role": "frontend-plugin"
+    "role": "frontend-plugin",
+    "pluginId": "rhdh-vault"
   },
   "sideEffects": false,
   "scripts": {

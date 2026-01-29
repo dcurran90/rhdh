@@ -17,7 +17,8 @@
     "registry": "https://npm.pkg.github.com"
   },
   "backstage": {
-    "role": "backend-plugin-module"
+    "role": "backend-plugin-module",
+    "pluginId": "scaffolder"
   },
   "scripts": {
     "tsc": "tsc",
