@@ -18,7 +18,10 @@
   },
   "backstage": {
     "role": "backend-plugin-module",
-    "pluginId": "scaffolder"
+    "pluginId": "scaffolder",
+    "pluginPackages": [
+      "@dcurran90/backstage-plugin-scaffolder-backend-module-vault-secret-add-module"
+    ]
   },
   "scripts": {
     "tsc": "tsc",

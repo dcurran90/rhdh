@@ -11,7 +11,11 @@
   "types": "dist/index.d.ts",
   "backstage": {
     "role": "backend-plugin",
-    "pluginId": "rhdh-vault"
+    "pluginId": "rhdh-vault",
+    "pluginPackages": [
+      "@dcurran90/backstage-plugin-rhdh-vault",
+      "@dcurran90/backstage-plugin-rhdh-vault-backend"
+    ]
   },
   "scripts": {
     "tsc": "tsc",

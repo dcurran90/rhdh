@@ -18,7 +18,11 @@
   },
   "backstage": {
     "role": "frontend-plugin",
-    "pluginId": "rhdh-vault"
+    "pluginId": "rhdh-vault",
+    "pluginPackages": [
+      "@dcurran90/backstage-plugin-rhdh-vault",
+      "@dcurran90/backstage-plugin-rhdh-vault-backend"
+    ]
   },
   "sideEffects": false,
   "scripts": {
