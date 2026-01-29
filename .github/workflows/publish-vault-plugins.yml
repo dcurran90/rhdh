@@ -38,12 +38,6 @@ jobs:
         working-directory: dynamic-plugins
         run: yarn install --immutable
 
-      - name: Generate TypeScript declarations for vault plugins
-        run: |
-          yarn workspace @dcurran90/backstage-plugin-rhdh-vault tsc
-          yarn workspace @dcurran90/backstage-plugin-rhdh-vault-backend tsc
-          yarn workspace @dcurran90/backstage-plugin-scaffolder-backend-module-vault-secret-add-module tsc
-
       - name: Build vault plugins
         run: |
           yarn workspace @dcurran90/backstage-plugin-rhdh-vault build
