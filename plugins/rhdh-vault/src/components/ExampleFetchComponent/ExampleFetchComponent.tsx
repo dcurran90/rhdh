@@ -1,4 +1,3 @@
-import { makeStyles } from '@material-ui/core/styles';
 import {
   Table,
   TableColumn,
@@ -8,15 +7,6 @@ import {
 import useAsync from 'react-use/lib/useAsync';
 import { useApi, discoveryApiRef, fetchApiRef } from '@backstage/core-plugin-api';
 import { useEffect, useState } from 'react';
-
-
-const useStyles = makeStyles({
-  avatar: {
-    height: 32,
-    width: 32,
-    borderRadius: '50%',
-  },
-});
 
 type VaultMount = {
   [path: string]: {
