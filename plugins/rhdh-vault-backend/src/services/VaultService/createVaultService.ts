@@ -2,7 +2,6 @@ import { LoggerService } from '@backstage/backend-plugin-api';
 import { NotFoundError } from '@backstage/errors';
 import { catalogServiceRef } from '@backstage/plugin-catalog-node';
 import { Config } from '@backstage/config';
-import crypto from 'node:crypto';
 import { VaultItem, VaultPath, VaultService } from './types';
 
 // TEMPLATE NOTE:

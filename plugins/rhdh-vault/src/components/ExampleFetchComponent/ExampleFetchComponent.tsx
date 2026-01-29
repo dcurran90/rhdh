@@ -23,21 +23,12 @@ type VaultMount = {
     type: string;
   }
 }
-type VaultItem = {
-  path: string;
-  key: string;
-  value: string;
-  version: string;
-  createdBy: string;
-  createdAt: string;
-}
 
 type DenseTableProps = {
   items: VaultMount[];
 };
 
 export const DenseTable = ({ items }: DenseTableProps) => {
-  const classes = useStyles();
   const [selectedMount, setSelectedMount] = useState<string | null>(null);
   const discoveryApi = useApi(discoveryApiRef);
   const fetchApi = useApi(fetchApiRef);

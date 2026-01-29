@@ -57,7 +57,6 @@ export function createVaultSecretAction(config: Config) {
         });
 
         if (!createMountResponse.ok) {
-          const errorText = await createMountResponse.text()
           throw new Error(`Failed to create mount: ${createMountResponse.status}`)
         }
 

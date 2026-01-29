@@ -36,7 +36,7 @@ export const rhdhVaultPlugin = createBackendPlugin({
 
         // Public endpoint for testing
         const publicRouter = express.Router();
-        publicRouter.get('/ping', async (req, res) => {
+        publicRouter.get('/ping', async (_req, res) => {
           try {
             const keys = await vaultService.listVaultSecretPaths({mountPath: 'secret/'});
             logger.info(JSON.stringify(keys, null, 2))
