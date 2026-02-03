@@ -65,3 +65,10 @@ oc apply -f manifests/configmap-app-config.yaml \
       - package: '@danielcurran90/backstage-plugin-scaffolder-backend-module-vault-secret-add-module@0.1.11'
         disabled: false
         integrity: 'sha512-FqR1rC3dgdXbUnjOE1TdC3nT8xqzMuA3u5n27ORAtQyr24DKVgHrLlRCXi9agPQbhgKZhj96kjivlnynDgyyTw=='
+
+
+
+# IN RHDH GO TO SELF-SERVICE AND REGISTER
+https://github.com/dcurran90/rhdh/blob/vaultPlugin/remote_testing/demo.yaml
+
+# TO TEST OR UTILIZE YOUR OWN TEMPLATE
