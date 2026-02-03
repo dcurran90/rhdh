@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dynamic-plugins-vault
+  namespace: rhdh-vault-test
+data:
+  dynamic-plugins.yaml: |
+    plugins:
+      # Vault plugins - installed from npmjs.org      
+      - package: '@danielcurran90/backstage-plugin-rhdh-vault-backend@0.1.1'
+        disabled: false
+        integrity: 'sha512-Ue0inD2JaoxFOpsGmPdB1qvQ6bur2oYKiUxfC0djJf7sHxivPOqUqYqCvF6H75+srMHHXV3DKm3ZlNlSFv0d3A=='
+
+      - package: '@danielcurran90/backstage-plugin-rhdh-vault@0.1.1'
+        disabled: false
+        integrity: 'sha512-a784oFfcpTKZY/N5XjdfB6sGyw6/CeWmOoRRjshB2PFLnW4Dn7qTVegvQCbIfDlZmLvrZ+fO4/oRXgddsLRvkg=='
+        pluginConfig:
+          dynamicPlugins:
+            frontend:
+              danielcurran90.backstage-plugin-rhdh-vault:
+                dynamicRoutes:
+                  - path: /rhdh-vault
+                    importName: RhdhVaultPage
+                    menuItem:
+                      text: Vault Secrets
+                      icon: lock
+
+      - package: '@danielcurran90/backstage-plugin-scaffolder-backend-module-vault-secret-add-module@0.1.11'
+        disabled: false
+        integrity: 'sha512-FqR1rC3dgdXbUnjOE1TdC3nT8xqzMuA3u5n27ORAtQyr24DKVgHrLlRCXi9agPQbhgKZhj96kjivlnynDgyyTw=='
+
+      # Enable GitHub plugins for catalog (from base image)
+      - package: ./dynamic-plugins/dist/backstage-plugin-scaffolder-backend-module-github-dynamic
+        disabled: false
+
+      - package: ./dynamic-plugins/dist/backstage-plugin-catalog-backend-module-github-dynamic
+        disabled: false

@@ -1,6 +1,6 @@
 {
-  "name": "@dcurran90/backstage-plugin-scaffolder-backend-module-vault-secret-add-module",
-  "version": "0.1.1",
+  "name": "@danielcurran90/backstage-plugin-scaffolder-backend-module-vault-secret-add-module",
+  "version": "0.1.11",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -14,12 +14,18 @@
     "access": "public",
     "main": "dist/index.cjs.js",
     "types": "dist/index.d.ts",
-    "registry": "https://npm.pkg.github.com"
+    "exports": {
+      ".": "./dist/index.cjs.js",
+      "./package.json": "./package.json"
+    }
   },
   "backstage": {
     "role": "backend-plugin-module",
     "pluginId": "scaffolder",
-    "pluginPackage": "@backstage/plugin-scaffolder-backend"
+    "pluginPackage": "@backstage/plugin-scaffolder-backend",
+    "features": {
+      ".": "@backstage/BackendFeature"
+    }
   },
   "scripts": {
     "tsc": "tsc",

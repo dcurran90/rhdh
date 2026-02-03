@@ -2,15 +2,14 @@ import {
   coreServices,
   createBackendModule,
 } from '@backstage/backend-plugin-api';
-import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node/alpha';
+import { scaffolderActionsExtensionPoint } from '@backstage/plugin-scaffolder-node';
 import { createVaultSecretAction } from './vaultSecretAddAction';
 import { getVaultSecretAction } from './vaultSecretGetAction';
 import { deleteVaultSecretAction } from './vaultSecretDeleteAction';
 
-
-export const scaffolderModuleVaultSecretGetModule = createBackendModule({
+export const scaffolderModuleVaultSecretAddModule = createBackendModule({
   pluginId: 'scaffolder',
-  moduleId: 'vault-secret-get-module',
+  moduleId: 'vault-secret-module',
   register(reg) {
     reg.registerInit({
       deps: {
@@ -19,47 +18,13 @@ export const scaffolderModuleVaultSecretGetModule = createBackendModule({
         config: coreServices.rootConfig,
        },
       async init({ scaffolderActions, logger, config }) {
-        // if you want to use any of core features, pass it to the action below
-        scaffolderActions.addActions(getVaultSecretAction( config ));
-        logger.info('vault-secret-get action registered');
-      },
-    });
-  },
-});
-
-export const scaffolderModuleVaultSecretAddModule = createBackendModule({
-  pluginId: 'scaffolder',
-  moduleId: 'vault-secret-add-module',
-  register(reg) {
-    reg.registerInit({
-      deps: { 
-        scaffolderActions: scaffolderActionsExtensionPoint,
-        logger: coreServices.logger,
-        config: coreServices.rootConfig,
-       },
-      async init({ scaffolderActions, logger, config }) {
-        // if you want to use any of core features, pass it to the action below
-        scaffolderActions.addActions(createVaultSecretAction( config ));
-        logger.info('vault-secret-add action registered');
-      },
-    });
-  },
-});
-
-export const scaffolderModuleVaultSecretDeleteModule = createBackendModule({
-  pluginId: 'scaffolder',
-  moduleId: 'vault-secret-delete-module',
-  register(reg) {
-    reg.registerInit({
-      deps: { 
-        scaffolderActions: scaffolderActionsExtensionPoint,
-        logger: coreServices.logger,
-        config: coreServices.rootConfig,
-       },
-      async init({ scaffolderActions, logger, config }) {
-        // if you want to use any of core features, pass it to the action below
-        scaffolderActions.addActions(deleteVaultSecretAction( config ));
-        logger.info('vault-secret-delete action registered');
+        // Register all three vault actions in a single call
+        scaffolderActions.addActions(
+          createVaultSecretAction(config),
+          getVaultSecretAction(config),
+          deleteVaultSecretAction(config),
+        );
+        logger.info('Vault secret actions registered (add, get, delete)');
       },
     });
   },

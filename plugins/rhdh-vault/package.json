@@ -1,5 +1,5 @@
 {
-  "name": "@dcurran90/backstage-plugin-rhdh-vault",
+  "name": "@danielcurran90/backstage-plugin-rhdh-vault",
   "version": "0.1.1",
   "license": "Apache-2.0",
   "description": "Vault plugin for Red Hat Developer Hub",
@@ -13,15 +13,14 @@
   "publishConfig": {
     "access": "public",
     "main": "dist/index.esm.js",
-    "types": "dist/index.d.ts",
-    "registry": "https://npm.pkg.github.com"
+    "types": "dist/index.d.ts"
   },
   "backstage": {
     "role": "frontend-plugin",
     "pluginId": "rhdh-vault",
     "pluginPackages": [
-      "@dcurran90/backstage-plugin-rhdh-vault",
-      "@dcurran90/backstage-plugin-rhdh-vault-backend"
+      "@danielcurran90/backstage-plugin-rhdh-vault",
+      "@danielcurran90/backstage-plugin-rhdh-vault-backend"
     ]
   },
   "sideEffects": false,

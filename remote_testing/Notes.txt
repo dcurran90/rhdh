@@ -1,0 +1,67 @@
+# Publish (if necessary)
+cd plugins/scaffolder-backend-module-vault-actions
+yarn build
+npm publish
+
+# Get the hash
+npm pack --dry-run --json | jq -r '.[0].integrity'                                                          
+# and put it into manifests/configmap-dynamic-plugins-published.yaml
+
+
+# Log into Openshift
+
+# vault in dev mode for testing
+oc apply -f vault/vault-deployment.yaml
+
+
+
+# FOR ANY DEPLOYMENT
+
+# create secret
+oc create secret generic rhdh-vault-secrets \
+  --from-literal=VAULT_ADDR="http://vault.rhdh-vault-test.svc.cluster.local:8200" \
+  --from-literal=VAULT_TOKEN="root"
+
+oc apply -f manifests/configmap-app-config.yaml \
+  -f manifests/configmap-dynamic-plugins-published.yaml \
+  -f manifests/rhdh-instance-published-plugins.yaml \
+  -f vault/vault-deployment.yaml
+
+
+
+# IMPORTANT CONFIG
+
+## configmap-app-config.yaml
+    app:
+      title: RHDH Vault Plugin Test
+      baseUrl: https://rhdh-vault-test-rhdh-vault-test.apps.dcurran-lab2026.opdev.io
+
+    # Vault plugin configuration from secret
+    rhdhVault:
+      baseUrl: ${VAULT_ADDR}
+      token: ${VAULT_TOKEN}
+
+## configmap-dynamic-plugins-published.yaml
+    plugins:
+      # Vault plugins - installed from npmjs.org      
+      - package: '@danielcurran90/backstage-plugin-rhdh-vault-backend@0.1.1'
+        disabled: false
+        integrity: 'sha512-Ue0inD2JaoxFOpsGmPdB1qvQ6bur2oYKiUxfC0djJf7sHxivPOqUqYqCvF6H75+srMHHXV3DKm3ZlNlSFv0d3A=='
+
+      - package: '@danielcurran90/backstage-plugin-rhdh-vault@0.1.1'
+        disabled: false
+        integrity: 'sha512-a784oFfcpTKZY/N5XjdfB6sGyw6/CeWmOoRRjshB2PFLnW4Dn7qTVegvQCbIfDlZmLvrZ+fO4/oRXgddsLRvkg=='
+        pluginConfig:
+          dynamicPlugins:
+            frontend:
+              danielcurran90.backstage-plugin-rhdh-vault:
+                dynamicRoutes:
+                  - path: /rhdh-vault
+                    importName: RhdhVaultPage
+                    menuItem:
+                      text: Vault Secrets
+                      icon: lock
+
+      - package: '@danielcurran90/backstage-plugin-scaffolder-backend-module-vault-secret-add-module@0.1.11'
+        disabled: false
+        integrity: 'sha512-FqR1rC3dgdXbUnjOE1TdC3nT8xqzMuA3u5n27ORAtQyr24DKVgHrLlRCXi9agPQbhgKZhj96kjivlnynDgyyTw=='

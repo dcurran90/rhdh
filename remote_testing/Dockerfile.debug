@@ -1,0 +1,6 @@
+FROM quay.io/rhdh-community/rhdh:next
+
+USER root
+COPY DAN_BackendInitializer.cjs.js /opt/app-root/src/node_modules/@backstage/backend-app-api/dist/wiring/BackendInitializer.cjs.js
+RUN chown 1001:1001 /opt/app-root/src/node_modules/@backstage/backend-app-api/dist/wiring/BackendInitializer.cjs.js
+USER 1001

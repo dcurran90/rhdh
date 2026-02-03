@@ -5,7 +5,7 @@ import { StaticPlugins } from './components/DynamicRoot/DynamicRoot';
 import ScalprumRoot from './components/DynamicRoot/ScalprumRoot';
 import { DefaultMainMenuItems } from './consts';
 
-const { rhdhVaultPlugin, ...RhdhVaultPage } = await import('@dcurran90/backstage-plugin-rhdh-vault');
+const { rhdhVaultPlugin, ...RhdhVaultPage } = await import('@danielcurran90/backstage-plugin-rhdh-vault');
 
 // Statically integrated frontend plugins
 const { dynamicPluginsInfoPlugin, ...dynamicPluginsInfoPluginModule } =

@@ -1,0 +1,151 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vault
+  namespace: rhdh-vault-test
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vault
+  namespace: rhdh-vault-test
+  labels:
+    app: vault
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8200
+      targetPort: 8200
+      protocol: TCP
+      name: http
+  selector:
+    app: vault
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: vault
+  namespace: rhdh-vault-test
+spec:
+  port:
+    targetPort: http
+  to:
+    kind: Service
+    name: vault
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault
+  namespace: rhdh-vault-test
+  labels:
+    app: vault
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vault
+  template:
+    metadata:
+      labels:
+        app: vault
+    spec:
+      serviceAccountName: vault
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: vault
+          image: hashicorp/vault:1.18
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8200
+              name: http
+              protocol: TCP
+          env:
+            - name: VAULT_DEV_ROOT_TOKEN_ID
+              value: "root"
+            - name: VAULT_DEV_LISTEN_ADDRESS
+              value: "0.0.0.0:8200"
+            - name: VAULT_ADDR
+              value: "http://127.0.0.1:8200"
+            - name: SKIP_SETCAP
+              value: "true"
+          args:
+            - server
+            - -dev
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          readinessProbe:
+            httpGet:
+              path: /v1/sys/health
+              port: 8200
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /v1/sys/health
+              port: 8200
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+---
+# ConfigMap with helpful vault commands
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vault-commands
+  namespace: rhdh-vault-test
+data:
+  README.md: |
+    # Vault Dev Server
+
+    This is a Vault server running in DEV MODE for testing only.
+
+    **WARNING**: Dev mode is NOT secure and should NEVER be used in production.
+
+    ## Access Information
+
+    - Token: root
+    - Address: http://vault.rhdh-vault-test.svc.cluster.local:8200
+    - External Route: https://vault-rhdh-vault-test.apps.dcurran-lab2026.opdev.io
+
+    ## Testing Commands
+
+    From within the cluster:
+
+    ```bash
+    # Create a test mount
+    curl -H "X-Vault-Token: root" \
+      -X POST \
+      -d '{"type":"kv","options":{"version":"2"}}' \
+      http://vault.rhdh-vault-test.svc.cluster.local:8200/v1/sys/mounts/secret
+
+    # Write a test secret
+    curl -H "X-Vault-Token: root" \
+      -X POST \
+      -d '{"data":{"password":"secret123"}}' \
+      http://vault.rhdh-vault-test.svc.cluster.local:8200/v1/secret/data/myapp
+
+    # Read the secret
+    curl -H "X-Vault-Token: root" \
+      http://vault.rhdh-vault-test.svc.cluster.local:8200/v1/secret/data/myapp
+
+    # List mounts
+    curl -H "X-Vault-Token: root" \
+      http://vault.rhdh-vault-test.svc.cluster.local:8200/v1/sys/mounts
+    ```

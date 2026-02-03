@@ -39,7 +39,7 @@
     "@backstage/plugin-search-react": "1.9.0",
     "@backstage/plugin-user-settings": "0.8.22",
     "@backstage/theme": "0.6.6",
-    "@dcurran90/backstage-plugin-rhdh-vault": "workspace:^",
+    "@danielcurran90/backstage-plugin-rhdh-vault": "workspace:^",
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.0",
     "@internal/plugin-dynamic-plugins-info": "*",

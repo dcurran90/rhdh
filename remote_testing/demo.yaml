@@ -26,9 +26,6 @@ spec:
           title: Value
           type: string
           description: value of the secret
-      ui:
-        path:
-          'ui:autofocus': true
   steps:    
     - id: create-secret
       name: create a new secret

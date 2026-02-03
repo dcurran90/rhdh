@@ -1,5 +1,5 @@
 {
-  "name": "@dcurran90/backstage-plugin-rhdh-vault-backend",
+  "name": "@danielcurran90/backstage-plugin-rhdh-vault-backend",
   "version": "0.1.1",
   "license": "Apache-2.0",
   "repository": {
@@ -13,8 +13,8 @@
     "role": "backend-plugin",
     "pluginId": "rhdh-vault",
     "pluginPackages": [
-      "@dcurran90/backstage-plugin-rhdh-vault",
-      "@dcurran90/backstage-plugin-rhdh-vault-backend"
+      "@danielcurran90/backstage-plugin-rhdh-vault",
+      "@danielcurran90/backstage-plugin-rhdh-vault-backend"
     ]
   },
   "scripts": {
@@ -51,7 +51,6 @@
   "publishConfig": {
     "access": "public",
     "main": "dist/index.cjs.js",
-    "types": "dist/index.d.ts",
-    "registry": "https://npm.pkg.github.com"
+    "types": "dist/index.d.ts"
   }
 }
