@@ -1,0 +1,46 @@
+# =============================================================================
+# FOR GITOPS-MANAGED DEPLOYMENTS (ArgoCD/Janus)
+# =============================================================================
+
+## 1. Get the correct endpoint and token for the vault service and create secret
+oc create secret generic rhdh-vault-secrets \
+  --from-literal=VAULT_ADDR="http://vault.vault.svc.cluster.local:8200" \
+  --from-literal=VAULT_TOKEN="root"
+
+
+# Edit: janus-idp-gitops/charts/backstage/backstage-rhtap-values.yaml
+## 2. Add dynamic plugin (around line 20 in global.dynamic.plugins section):
+global:
+  dynamic:
+    plugins:
+      - package: '@danielcurran90/backstage-plugin-scaffolder-backend-module-vault-secret-add-module@0.1.12'
+        disabled: false
+        integrity: 'sha512-QtmUnkqMa8oVumW/SkGx+D/mkZNobu7MVs2L4r8l3N2SfhjALfAE95XWzuEnb+R5pfkVFGZD7SS4xdkun/BaEg=='
+
+## 3. Attach the secret to deployment (around line 160, right after extraEnvVars):
+upstream:
+  backstage:
+    extraEnvVars:
+      # ... existing env vars ...
+
+    # Add this to load VAULT_ADDR and VAULT_TOKEN from rhdh-vault-secrets
+    extraEnvVarsSecrets:
+      - rhdh-vault-secrets
+
+## 4. Add app config (around line 194 in upstream.backstage.appConfig):
+    appConfig:
+      rhdhVault:
+        baseUrl: ${VAULT_ADDR}
+        token: ${VAULT_TOKEN}
+
+# After committing to GitLab, ArgoCD will auto-sync the changes
+# but you can force a rollout/update with
+
+oc patch application backstage -n openshift-gitops --type merge -p '{"metadata":{"annotations":{"argocd.argoproj.io/refresh":"normal"}}}'                                               
+
+# And then run a rollout
+
+# IN RHDH GO TO SELF-SERVICE AND REGISTER
+https://github.com/dcurran90/rhdh/blob/vaultPlugin/remote_testing/demo.yaml
+
+# TO TEST OR UTILIZE YOUR OWN TEMPLATE

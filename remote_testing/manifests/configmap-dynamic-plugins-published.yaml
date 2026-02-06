@@ -11,9 +11,9 @@ data:
         disabled: false
         integrity: 'sha512-Ue0inD2JaoxFOpsGmPdB1qvQ6bur2oYKiUxfC0djJf7sHxivPOqUqYqCvF6H75+srMHHXV3DKm3ZlNlSFv0d3A=='
 
-      - package: '@danielcurran90/backstage-plugin-rhdh-vault@0.1.1'
+      - package: '@danielcurran90/backstage-plugin-rhdh-vault@0.1.3'
         disabled: false
-        integrity: 'sha512-a784oFfcpTKZY/N5XjdfB6sGyw6/CeWmOoRRjshB2PFLnW4Dn7qTVegvQCbIfDlZmLvrZ+fO4/oRXgddsLRvkg=='
+        integrity: 'sha512-IgYgFwTfTI1oxPtK0XEFxH9LGpmn1fVsC99rWV3VkBEs/zwS3zr0pxhZ7+W4unbOMEaIquruBWLsL/HVVGYD4w=='
         pluginConfig:
           dynamicPlugins:
             frontend:
@@ -25,9 +25,14 @@ data:
                       text: Vault Secrets
                       icon: lock
 
-      - package: '@danielcurran90/backstage-plugin-scaffolder-backend-module-vault-secret-add-module@0.1.11'
+      # If you see "Cannot get id for undefined" Error on startup, use this version
+      # - package: '@danielcurran90/backstage-plugin-scaffolder-backend-module-vault-secret-add-module@0.1.11'
+      #   disabled: false
+      #   integrity: 'sha512-FqR1rC3dgdXbUnjOE1TdC3nT8xqzMuA3u5n27ORAtQyr24DKVgHrLlRCXi9agPQbhgKZhj96kjivlnynDgyyTw=='
+      # Valid version for RHTAP Feb 2026
+      - package: '@danielcurran90/backstage-plugin-scaffolder-backend-module-vault-secret-add-module@0.1.12'
         disabled: false
-        integrity: 'sha512-FqR1rC3dgdXbUnjOE1TdC3nT8xqzMuA3u5n27ORAtQyr24DKVgHrLlRCXi9agPQbhgKZhj96kjivlnynDgyyTw=='
+        integrity: 'sha512-QtmUnkqMa8oVumW/SkGx+D/mkZNobu7MVs2L4r8l3N2SfhjALfAE95XWzuEnb+R5pfkVFGZD7SS4xdkun/BaEg=='
 
       # Enable GitHub plugins for catalog (from base image)
       - package: ./dynamic-plugins/dist/backstage-plugin-scaffolder-backend-module-github-dynamic

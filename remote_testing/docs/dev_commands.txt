@@ -1,0 +1,28 @@
+# Publish (if necessary)
+cd plugins/scaffolder-backend-module-vault-actions
+yarn build
+npm publish
+
+# Get the hash
+npm pack --dry-run --json | jq -r '.[0].integrity'                                                          
+# and put it into manifests/configmap-dynamic-plugins-published.yaml
+
+
+
+# Make a vault for testing
+oc apply -f vault/vault-deployment.yaml
+
+
+# Get the endpoint and token for vault then create secret
+oc create secret generic rhdh-vault-secrets \
+  --from-literal=VAULT_ADDR="http://vault.vault.svc.cluster.local:8200" \
+  --from-literal=VAULT_TOKEN="root"
+
+
+# Ensure secret is attached to the deplooyment
+
+oc apply -f manifests/configmap-app-config.yaml \
+  -f manifests/configmap-dynamic-plugins-published.yaml \
+  -f manifests/rhdh-instance-published-plugins.yaml \
+  -f vault/vault-deployment.yaml
+
