@@ -6,10 +6,17 @@ export function deleteVaultSecretAction(config: Config) {
     id: 'vault:delete-secret',
     description: 'delete a secret from vault',
     schema: {
-      input: (z) =>
-        z.object({
-          path: z.string().describe('The path for the secret'),
-        }),
+      input: {
+        type: 'object',
+        required: ['path'],
+        properties: {
+          path: {
+            type: 'string',
+            title: 'Path',
+            description: 'The path for the secret',
+          },
+        },
+      },
     },
     async handler(ctx) {
       const vaultUrl = config.getString('rhdhVault.baseUrl');

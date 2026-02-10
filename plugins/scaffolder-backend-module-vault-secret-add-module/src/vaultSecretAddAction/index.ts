@@ -6,12 +6,27 @@ export function createVaultSecretAction(config: Config) {
     id: 'vault:add-secret',
     description: 'adds a secret in vault',
     schema: {
-      input: (z) =>
-        z.object({
-          path: z.string().describe('The path for the secret'),
-          key: z.string().describe('The key for the secret'),
-          value: z.string().describe('The value for the secret'),
-        }),
+      input: {
+        type: 'object',
+        required: ['path', 'key', 'value'],
+        properties: {
+          path: {
+            type: 'string',
+            title: 'Path',
+            description: 'The path for the secret',
+          },
+          key: {
+            type: 'string',
+            title: 'Key',
+            description: 'The key for the secret',
+          },
+          value: {
+            type: 'string',
+            title: 'Value',
+            description: 'The value for the secret',
+          },
+        },
+      },
     },
     async handler(ctx) {
       const vaultUrl = config.getString('rhdhVault.baseUrl');

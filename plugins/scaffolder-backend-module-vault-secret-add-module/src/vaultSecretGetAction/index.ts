@@ -6,14 +6,26 @@ export function getVaultSecretAction(config: Config) {
     id: 'vault:get-secret',
     description: 'get a secret from vault',
     schema: {
-      input: (z) =>
-        z.object({
-          path: z.string().describe('The path for the secret'),
-        }),
-      output: (z) =>
-        z.object({
-          data: z.record(z.any()).optional(),
-        }),
+      input: {
+        type: 'object',
+        required: ['path'],
+        properties: {
+          path: {
+            type: 'string',
+            title: 'Path',
+            description: 'The path for the secret',
+          },
+        },
+      },
+      output: {
+        type: 'object',
+        properties: {
+          data: {
+            type: 'object',
+            description: 'The secret data',
+          },
+        },
+      },
     },
     async handler(ctx) {
       const vaultUrl = config.getString('rhdhVault.baseUrl');
