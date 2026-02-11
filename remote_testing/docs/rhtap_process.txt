@@ -13,9 +13,9 @@ oc create secret generic rhdh-vault-secrets \
 global:
   dynamic:
     plugins:
-      - package: '@danielcurran90/backstage-plugin-scaffolder-backend-module-vault-secret-add-module@0.1.12'
+      - package: '@danielcurran90/backstage-plugin-scaffolder-backend-module-vault-secret-add-module@0.1.14'
         disabled: false
-        integrity: 'sha512-QtmUnkqMa8oVumW/SkGx+D/mkZNobu7MVs2L4r8l3N2SfhjALfAE95XWzuEnb+R5pfkVFGZD7SS4xdkun/BaEg=='
+        integrity: 'sha512-M+Xvv/bIL7UvAlD/YLqtG39RKNNNMPmLmMyrHN112gOfrTNXSROBGX0AVRsrOUSc6XinrOlJX1E0Z1DhxYnpDw=='
 
 ## 3. Attach the secret to deployment (around line 160, right after extraEnvVars):
 upstream:
